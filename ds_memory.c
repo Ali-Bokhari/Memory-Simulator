@@ -45,17 +45,26 @@ int ds_init( char * filename ){
   return 0;
 }
 
+void ds_init_test(){
+  int i;
+  for(i = 0; i < 20; i++){
+    printf("%d: %ld %ld %d\n", i, ds_file.block[i].start, ds_file.block[i].length, ds_file.block[i].alloced);
+  }
+}
+
 long ds_malloc( long amount ){
   int i;
   int j;
+  long length;
   for(i = 0; i < MAX_BLOCKS; i++){
     if (ds_file.block[i].length >= amount && ds_file.block[i].alloced == 0){
+      length = ds_file.block[i].length;
       ds_file.block[i].length = amount;
       ds_file.block[i].alloced = 1;
       for(j = 0; j < MAX_BLOCKS; j++){
         if (ds_file.block[j].length == 0){
           ds_file.block[j].start = ds_file.block[i].start + amount;
-          ds_file.block[j].length = ds_file.block[i].length - amount;
+          ds_file.block[j].length = length - amount;
           ds_file.block[j].alloced = 0;
           break;
         }
@@ -97,6 +106,13 @@ long ds_write( long start, void *ptr, long bytes){
   return start;
 }
 
-int main(){
-  return 0;
+int ds_finish(){
+  if (fseek(ds_file.fp, 0, SEEK_SET) != 0){
+    return 0;
+  }
+  if (fwrite(ds_file.block, sizeof(struct ds_blocks_struct), MAX_BLOCKS, ds_file.fp) != MAX_BLOCKS){
+    return 0;
+  }
+  printf("reads: %d\nwrites: %d\n", ds_counts.reads, ds_counts.writes);
+  return 1;
 }
