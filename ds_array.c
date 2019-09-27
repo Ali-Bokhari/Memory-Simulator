@@ -49,44 +49,87 @@ int ds_insert(int value, long index){
   if(index > elements){
     return 1;
   }
-  for(i = 0; i < elements; i++){
+  elements++;
+  for(i = index; i < elements; i++){
     ds_read(&old, sizeof(long)+(i*sizeof(int)), sizeof(int));
     ds_write(sizeof(long)+(i*sizeof(int)), &new, sizeof(int));
-    old = new;
+    new = old;
   }
-  elements++;
+  return 0;
+}
+
+int ds_delete(long index){
+  int old;
+  int i;
+  if(index > elements){
+    return 1;
+  }
+  for(i = index; i < elements; i++){
+    ds_read(&old, sizeof(long)+((i+1)*sizeof(int)), sizeof(int));
+    ds_write(sizeof(long)+(i*sizeof(int)), &old, sizeof(int));
+  }
+  elements--;
+  return 0;
+}
+
+int ds_swap(long index1, long index2){
+  int value1;
+  int value2;
+  if(index1 > elements || index2 > elements){
+    return 1;
+  }
+  ds_read(&value1, sizeof(long)+(index1*sizeof(int)), sizeof(int));
+  ds_read(&value2, sizeof(long)+(index2*sizeof(int)), sizeof(int));
+  ds_write(sizeof(long)+(index1*sizeof(int)), &value2, sizeof(int));
+  ds_write(sizeof(long)+(index2*sizeof(int)), &value1, sizeof(int));
+  return 0;
+}
+
+int ds_find(int target){
+  int value;
+  int i;
+  for (i = 0; i < elements; i++){
+    ds_read(&value, sizeof(long)+(i*sizeof(int)), sizeof(int));
+    if(value == target){
+      return i;
+    }
+  }
+  return -1;
+}
+
+int ds_read_elements(char * filename){
+  int i;
+  FILE *fp;
+  int value;
+
+  fp = fopen(filename, "r");
+  if(fp==NULL){
+    return 1;
+  }
+  for (i = 0; i < MAX_ELEMENTS; i++){
+    if(fscanf(fp, "%d", &value)==EOF){
+      return 0;
+    }
+    ds_insert(value, i);
+  }
+  return 2;
+}
+
+int ds_finish_array(){
+  if (ds_write(0, &elements, sizeof(long)) == -1){
+    return 1;
+  }
+  if (ds_finish()==0){
+    return 2;
+  }
   return 0;
 }
 
 void array_test(){
   int i;
   int rread;
-  for(i=0; i<MAX_ELEMENTS; i++){
+  for(i=0; i<elements; i++){
     ds_read(&rread, sizeof(long)+(i*sizeof(int)), sizeof(int));
     printf("%d: %d\n", i, rread);
   }
-}
-
-int main( int argc, char**argv )
-{
-  int value;
-  long index;
-
-  ds_create("array.bin", 2048);
-  ds_create_array();
-
-  if(argc!=3){
-    fprintf( stderr,"Usage:  %svalue index\n", argv[0] );
-    return-1;
-  }
-  value = atoi( argv[1] );
-  index = atol( argv[2] );
-
-  ds_init_array();
-  ds_insert( value, index );
-  array_test();
-  printf("%ld\n", elements);
-
-  return 0;
-
 }
