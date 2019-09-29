@@ -1,3 +1,9 @@
+/*
+Ali Bokhari
+0970498
+abokhari@uoguelph.ca
+*/
+
 #include <stdio.h>
 
 #define MAX_BLOCKS 4096

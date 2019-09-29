@@ -1,3 +1,9 @@
+/*
+Ali Bokhari
+0970498
+abokhari@uoguelph.ca
+*/
+
 #include "ds_memory.h"
 #include <stdio.h>
 #include <stdlib.h>
@@ -113,6 +119,7 @@ int ds_finish(){
   if (fwrite(ds_file.block, sizeof(struct ds_blocks_struct), MAX_BLOCKS, ds_file.fp) != MAX_BLOCKS){
     return 0;
   }
+  fclose(ds_file.fp);
   printf("reads: %d\nwrites: %d\n", ds_counts.reads, ds_counts.writes);
   return 1;
 }

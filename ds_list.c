@@ -1,3 +1,9 @@
+/*
+Ali Bokhari
+0970498
+abokhari@uoguelph.ca
+*/
+
 #include "ds_list.h"
 #include "ds_memory.c"
 
@@ -38,9 +44,10 @@ int ds_replace(int value, long index){
     if(index == i){
       list.item = value;
       ds_write(prev, &list, sizeof(struct ds_list_item_struct));
+      return 0;
     }
   }
-  return 0;
+  return 1;
 }
 
 int ds_insert(int value, long index){
@@ -124,7 +131,6 @@ int ds_swap(long index1, long index2){
       return 1;
     }
     if(index1 == i){
-      printf("index one found\n");
       addy1 = prev;
       struct1 = list;
       i++;
@@ -134,7 +140,6 @@ int ds_swap(long index1, long index2){
           return 1;
         }
         if (index2 == j){
-          printf("index2 found\n");
           addy2 = prev;
           struct2 = list;
           temp = struct2.item;

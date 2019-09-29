@@ -1,3 +1,9 @@
+/*
+Ali Bokhari
+0970498
+abokhari@uoguelph.ca
+*/
+
 #include "ds_array.h"
 #include "ds_memory.c"
 
