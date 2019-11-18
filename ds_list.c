@@ -5,7 +5,7 @@ abokhari@uoguelph.ca
 */
 
 #include "ds_list.h"
-#include "ds_memory.c"
+#include "ds_memory.h"
 
 void ds_create_list(){
   long negone = -1;
